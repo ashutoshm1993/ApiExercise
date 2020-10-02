@@ -1,0 +1,56 @@
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import static io.restassured.RestAssured.given;
+
+public class apiTest {
+
+	
+	@Test
+	public void Test1(){
+		//Making Request to base URL
+		RestAssured.baseURI="getData.json";
+		//Getting the response in string format
+		String resp =	given().queryParam("symbol", "Testsymbol").
+				
+		when().
+		get("").
+		then().assertThat().statusCode(200).extract().asString();
+		System.out.println(resp);
+		//Converting String response to jsonpath object so that we can retrieve individual values
+		JsonPath js = new JsonPath(resp);
+		//Asserting individual values are not null. If for some reason they are null, the test will fail
+		String symbol = js.getString("symbol");
+		Assert.assertNotNull(symbol);
+		String name = js.getString("name");
+		Assert.assertNotNull(name);
+		String date = js.getString("date");
+		// we could also add some more assertion here to check if the date is today's date.
+		Assert.assertNotNull(date);
+		String lastPrice = js.getString("lastPrice");
+		Assert.assertNotNull(lastPrice);
+		String change = js.getString("change");
+		Assert.assertNotNull(change);
+	
+		String ask = js.getString("ask");
+		//Asserting values for ask and bidvalue are greater than 0 if they are not null.
+		if(!ask.equals(null)) {
+			int askvalue = Integer.parseInt(ask);
+			Assert.assertTrue(askvalue>0);
+		}
+		
+	String bid = js.getString("bid");
+		
+		if(!bid.equals(null)) {
+			int bidvalue = Integer.parseInt(bid);
+			Assert.assertTrue(bidvalue>0);
+		}
+		
+	
+
+	}
+	
+
+}

@@ -1,0 +1,62 @@
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import static io.restassured.RestAssured.given;
+
+public class quoteMedia2 {
+
+	@Test
+	public void Test1(){
+		String date = "10/1/2020";
+		RestAssured.baseURI="getData.json";
+		
+		String resp =	given().queryParam("symbol", "Testsymbol").queryParam("date",date).
+		when().
+		get("").
+		then().assertThat().statusCode(200).extract().asString();
+		System.out.println(resp);
+		JsonPath js = new JsonPath(resp);
+		String symbol = js.getString("symbol");
+		Assert.assertNotNull(symbol);
+		String name = js.getString("name");
+		Assert.assertNotNull(name);
+		String responseDate = js.getString("date");
+		// Asserting if correct date is returned. ie the date we passed via query parameter
+		Assert.assertNotNull(date);
+		Assert.assertEquals(date, responseDate);
+		String lastPrice = js.getString("lastPrice");
+		Assert.assertNotNull(lastPrice);
+		String change = js.getString("change");
+		Assert.assertNotNull(change);
+	
+		String ask = js.getString("ask");
+		
+		if(!ask.equals(null)) {
+			int askvalue = Integer.parseInt(ask);
+			Assert.assertTrue(askvalue>0);
+		}
+		
+	String bid = js.getString("bid");
+		
+		if(!bid.equals(null)) {
+			int bidvalue = Integer.parseInt(bid);
+			Assert.assertTrue(bidvalue>0);
+		}
+		
+		
+		
+		
+		
+		
+	
+	
+
+	
+		
+
+	}
+	
+
+}
